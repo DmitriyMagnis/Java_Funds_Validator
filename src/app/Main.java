@@ -12,26 +12,28 @@ public class Main {
 
         double balance = balanceRepo.getBalance();
 
+        DataProvider provider = new DataProvider();
+
         System.out.printf("Balance is USD %.2f.%n" +
                 "Enter purchase amount, USD: ", balance);
 
-        double withdraw = getAmount();
+        double withdraw = provider.getData();
 
-        try {
-            new AccountValidator().validateAmount(withdraw, balance);
+        DataHandler handler = new DataHandler();
 
+        String result = handler.handleData(withdraw, balance);
+
+        if (result.equals("OK")) {
             balanceRepo.setBalance(balance - withdraw);
 
             System.out.printf("Funds are OK. Purchase paid." +
                     "%nBalance is USD %.2f", balanceRepo.getBalance());
-
-        } catch (FundsException ex) {
-            System.out.println(ex.getMessage());
+        } else {
+            System.out.println(handler.handleData(withdraw, balance));
         }
+
+
+
     }
 
-    private static double getAmount() {
-        Scanner scanner = new Scanner(System.in);
-        return scanner.nextDouble();
-    }
 }
